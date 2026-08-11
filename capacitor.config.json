@@ -1,0 +1,8 @@
+{
+  "appId": "com.ranji.fitness",
+  "appName": "燃记",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}

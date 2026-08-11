@@ -1,0 +1,12 @@
+import { Activity, BookOpen, Dumbbell, Flame, Home, CalendarDays, BarChart3, NotebookPen, Settings, Utensils, Weight, ChevronRight, Plus } from 'lucide-react'
+
+export const navigation=[['today','今日',Home],['workout','训练',Dumbbell],['records','记录',BookOpen],['plan','计划',CalendarDays],['stats','统计',BarChart3],['settings','设置',Settings]]
+const typeMeta={meal:[Utensils,'lime'],activity:[Activity,'orange'],body:[Weight,'blue'],journal:[NotebookPen,'violet']}
+
+export function Brand(){return <div className="brand"><span><Flame size={23} fill="currentColor"/></span><div><strong>燃记</strong><small>FITNESS LEDGER</small></div></div>}
+export function Nav({item,active,onClick}){const Icon=item[2];return <button className={'nav-button '+(active?'active':'')} onClick={onClick}><Icon size={21}/><span>{item[1]}</span></button>}
+export function Heading({eyebrow,title,action,onAction,children}){return <div className="heading"><div><p className="eyebrow">{eyebrow}</p><h2>{title}</h2></div>{children||action&&<button className="text-button" onClick={onAction}>{action}<ChevronRight size={16}/></button>}</div>}
+export function Metric({icon:Icon,label,value,unit='kcal'}){return <div className="metric"><span><Icon size={18}/></span><div><small>{label}</small><strong>{value} <i>{unit}</i></strong></div></div>}
+export function Quick({icon:Icon,label,note,tone,onClick}){return <button className="quick" onClick={onClick}><span className={tone}><Icon size={21}/></span><div><strong>{label}</strong><small>{note}</small></div><Plus size={17}/></button>}
+export function Timeline({entries,onEdit,onDelete}){return <div className="timeline">{entries.map(function(entry){const meta=typeMeta[entry.type]||typeMeta.journal,Icon=meta[0];return <div className="timeline-item" key={entry.id}><time>{entry.time}</time><span className={meta[1]}><Icon size={16}/></span><div><strong>{entry.title}</strong><small>{entry.detail}</small></div>{entry.calories!==undefined?<b className={entry.calories<0?'burn':''}>{entry.calories>0?'+':''}{entry.calories}<i> kcal</i></b>:<b>{entry.value}</b>}{onEdit&&<div className="row-actions"><button onClick={function(){onEdit(entry)}}>编辑</button><button className="danger-link" onClick={function(){onDelete(entry)}}>删除</button></div>}</div>})}</div>}
+export function Stat({icon:Icon,tone,label,value,unit,note}){return <article className="card stat"><span className={tone}><Icon/></span><p>{label}</p><strong>{value} <small>{unit}</small></strong><i>{note}</i></article>}

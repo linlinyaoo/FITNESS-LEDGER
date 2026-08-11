@@ -1,0 +1,48 @@
+# Dependencies and frontend output
+node_modules/
+dist/
+.vite/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.local
+*.log
+vite.stderr.log
+vite.stdout.log
+
+# Editors and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Desktop build output
+release/
+release-exe/
+
+# Android build output and local configuration
+release-apk/
+android/.gradle/
+android/.idea/
+android/build/
+android/**/build/
+android/local.properties
+android/app/src/main/assets/
+android/capacitor-cordova-android-plugins/
+*.apk
+*.aab
+*.jks
+*.keystore
+android/key.properties
+
+# Locally downloaded Android/Gradle toolchains
+.android-commandlinetools.zip
+.android-commandlinetools-extract-*/
+.gradle-*-bin.zip
+.gradle-*-runtime/
+
+# Private reference material (not application source)
+训练计划/
+训练计划架构与动作选择.txt
