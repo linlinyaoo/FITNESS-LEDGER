@@ -1,0 +1,57 @@
+name: Publish Android release
+
+on:
+  push:
+    branches:
+      - release-upload/v0.1.1
+
+permissions:
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update draft and upload APK
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: v0.1.1
+          DRAFT_SLUG: untagged-da65435863def8fe7509
+          ASSET: release-apk/ranji-fitness-ledger-v0.1.1.apk
+        run: |
+          set -euo pipefail
+
+          release_id="$(gh api "repos/${GH_REPO}/releases?per_page=100" \
+            --jq '.[] | select(.draft == true) | [.id, .html_url] | @tsv' \
+            | awk -v slug="${DRAFT_SLUG}" '$2 ~ ("/" slug "$") { print $1; exit }')"
+
+          if [[ -z "${release_id}" ]]; then
+            release_id="$(gh api --method POST "repos/${GH_REPO}/releases" \
+              -f tag_name="${TAG}" \
+              -f target_commitish="main" \
+              -f name="燃记 Fitness Ledger v0.1.1" \
+              --raw-field body="$(cat RELEASE_NOTES.md)" \
+              -F draft=true \
+              -F prerelease=false \
+              --jq '.id')"
+          else
+            gh api --method PATCH "repos/${GH_REPO}/releases/${release_id}" \
+              -f tag_name="${TAG}" \
+              -f target_commitish="main" \
+              -f name="燃记 Fitness Ledger v0.1.1" \
+              --raw-field body="$(cat RELEASE_NOTES.md)" \
+              -F draft=true \
+              -F prerelease=false >/dev/null
+          fi
+
+          gh release upload "${TAG}" "${ASSET}#Android APK（v0.1.1）" --clobber
+
+          gh api --method PATCH "repos/${GH_REPO}/releases/${release_id}" \
+            -F draft=false \
+            -F prerelease=false >/dev/null
+
+          gh release view "${TAG}" --json url,tagName,name,isDraft,isPrerelease
